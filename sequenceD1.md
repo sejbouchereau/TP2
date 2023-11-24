@@ -3,24 +3,27 @@
 ```mermaid
 sequenceDiagram
 actor Bibliothécaire
-    Bibliothécaire->>+Frontend: Enter code;
-    Frontend->>+Backend: Verify code;
+    Bibliothécaire->>+Frontend: Enter code
+    Frontend->>+Backend: Verify code
 
     alt
         Backend-->>Frontend: Valid code
         Frontend->>Backend: Verify if exists
+        Backend->>+MongoDB: Verify similarities
 
         alt
+        MongoDB-->>Backend: No similarities
         Backend-->>Frontend: Book doesn't exist
         Frontend->>Bibliothécaire: Request book info
 
         else
+        MongoDB-->>-Backend: Similarities
         Backend-->>Frontend: Book exists
-        Frontend->>Bibliothécaire: Erreur "Livre déjà existant"
+        Frontend->>Bibliothécaire: Error "Livre déjà existant"
         end
     else
         Backend-->>Frontend: Invalid code
-        Frontend->>Bibliothécaire: Erreur "Code invalide"
+        Frontend->>Bibliothécaire: Error "Code invalide"
     end
 
     Bibliothécaire-->>Frontend: Enter book info

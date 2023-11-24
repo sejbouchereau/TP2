@@ -9,14 +9,17 @@ actor Bibliothécaire
     alt
         Backend-->>Frontend: Valid code
         Frontend->>Backend: Verify if exists
+        Backend->>+MongoDB: Verify similarities
 
         alt
+        MongoDB-->>Backend: No similarities
         Backend-->>Frontend: Book doesn't exist
         Frontend->>Bibliothécaire: Request book info
 
         else
+        MongoDB-->>-Backend: Similarities
         Backend-->>Frontend: Book exists
-        Frontend->>Bibliothécaire: Erreur "Livre déjà existant"
+        Frontend->>Bibliothécaire: Error "Livre déjà existant"
         end
     else
         Backend-->>Frontend: Invalid code
@@ -25,14 +28,17 @@ actor Bibliothécaire
 
     Bibliothécaire-->>Frontend: Enter book name
     Frontend->>Backend: Verify if exists
+    Backend->>+MongoDB: Verify similarities
 
-    alt
+        alt
+        MongoDB-->>Backend: No similarities
         Backend-->>Frontend: Book doesn't exist
         Frontend->>Bibliothécaire: Request book info
 
         else
+        MongoDB-->>-Backend: Similarities
         Backend-->>Frontend: Book exists
-        Frontend->>Bibliothécaire: Erreur "Livre déjà existant"
+        Frontend->>Bibliothécaire: Error "Livre déjà existant"
         end
 
     Bibliothécaire-->>Frontend: Enter book info
